@@ -1,0 +1,1235 @@
+<!DOCTYPE html>
+<!-- saved from url=(0050)http://localhost:3000/index.html?open_in_browser=1 -->
+<html lang="en" suppresshydrationwarning="true" data-qb-installed="true"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Until June 22 💛</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com/">
+  <link href="./Countdown_files/css2" rel="stylesheet">
+  <link rel="stylesheet" href="./Countdown_files/leaflet.css">
+  <script type="text/javascript" id="www-widgetapi-script" src="./Countdown_files/www-widgetapi.js.download" async=""></script><script src="./Countdown_files/leaflet.js.download"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-start: #1a0a2e;
+      --bg-mid:   #2d1b4e;
+      --bg-end:   #0d1f3c;
+      --gold:     #f5c842;
+      --rose:     #ff8fab;
+      --cream:    #fff8ee;
+      --card:     rgba(255,255,255,0.06);
+      --border:   rgba(255,255,255,0.12);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, var(--bg-start), var(--bg-mid), var(--bg-end));
+      min-height: 100vh;
+      color: var(--cream);
+      overflow-x: hidden;
+    }
+
+    /* ── Stars ── */
+    #stars {
+      position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      overflow: hidden;
+    }
+    .star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle var(--d, 3s) ease-in-out infinite alternate;
+    }
+    @keyframes twinkle {
+      0%   { opacity: 0.05; transform: scale(1); }
+      50%  { opacity: 1;    transform: scale(1.6); }
+      100% { opacity: 0.05; transform: scale(1); }
+    }
+
+    /* ── Floating hearts ── */
+    .heart-float {
+      position: fixed;
+      font-size: 1.2rem;
+      animation: floatUp var(--dur, 6s) ease-in var(--delay, 0s) infinite;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+    @keyframes floatUp {
+      0%   { transform: translateY(110vh) rotate(0deg); opacity: 0; }
+      10%  { opacity: 0.6; }
+      90%  { opacity: 0.4; }
+      100% { transform: translateY(-10vh) rotate(30deg); opacity: 0; }
+    }
+
+    /* ── Layout ── */
+    .page {
+      position: relative; z-index: 1;
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 2.5rem 1.25rem 4rem;
+      display: flex; flex-direction: column; gap: 2rem;
+    }
+
+    /* ── Pulse heart ── */
+    .pulse-heart { display: inline-block; transform-origin: center; }
+    .pulse-heart.beat { animation: heartbeat 0.65s ease-in-out; }
+    @keyframes heartbeat {
+      0%   { transform: scale(1); }
+      25%  { transform: scale(1.28); }
+      50%  { transform: scale(1); }
+      70%  { transform: scale(1.16); }
+      100% { transform: scale(1); }
+    }
+
+    /* ── Hero ── */
+    .hero { text-align: center; padding: 1rem 0 0.5rem; }
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 6vw, 3.2rem);
+      color: var(--gold);
+      line-height: 1.2;
+      letter-spacing: -0.5px;
+    }
+    .hero-sub {
+      margin-top: 0.5rem;
+      font-size: 0.95rem;
+      color: rgba(255,255,255,0.55);
+      font-style: italic;
+      font-family: 'Playfair Display', serif;
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 1.75rem 1.5rem;
+      backdrop-filter: blur(10px);
+    }
+    .card-title {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 1.2rem;
+    }
+
+    /* ── Countdown ── */
+    .countdown-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.75rem;
+    }
+    .count-box {
+      text-align: center;
+      background: rgba(255,255,255,0.05);
+      border-radius: 14px;
+      padding: 1rem 0.5rem;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .count-num {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 6vw, 3rem);
+      font-weight: 700;
+      color: var(--gold);
+      line-height: 1;
+      display: block;
+    }
+    .count-label {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: rgba(255,255,255,0.45);
+      margin-top: 0.4rem;
+    }
+
+    /* rotating sweet message */
+    .sweet-msg {
+      text-align: center;
+      margin-top: 1.25rem;
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1rem;
+      color: var(--rose);
+      min-height: 1.5rem;
+      transition: opacity 0.5s;
+    }
+
+    /* ── Journey Map ── */
+    #journey-map {
+      height: 280px;
+      border-radius: 12px;
+      overflow: hidden;
+      margin-top: 0.5rem;
+    }
+    .leaflet-container { background: #0d1525 !important; }
+    .journey-bar-wrap { margin-top: 0.85rem; }
+    .journey-bar-labels {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.7rem;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 0.45rem;
+    }
+    #progress-pct { color: var(--gold); font-size: 0.72rem; }
+    .journey-bar-track {
+      height: 5px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .journey-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #ff8fab, #f5c842);
+      border-radius: 99px;
+      transition: width 1s linear;
+    }
+
+    /* ── Surprise button ── */
+    .surprise-btn {
+      width: 100%;
+      padding: 1rem;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #f5c842, #ff8fab);
+      color: #1a0a2e;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 0.5px;
+      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 4px 20px rgba(245,200,66,0.3);
+    }
+    .surprise-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(245,200,66,0.4); }
+    .surprise-btn:active { transform: translateY(0); }
+
+    .surprise-output {
+      margin-top: 1.25rem;
+      min-height: 60px;
+      text-align: center;
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1.05rem;
+      color: var(--cream);
+      line-height: 1.6;
+      opacity: 0;
+      transition: opacity 0.6s;
+    }
+    .surprise-output.show { opacity: 1; }
+
+    /* ── Open When ── */
+    .open-when-list { display: flex; flex-direction: column; gap: 0.75rem; }
+    .ow-item {
+      display: flex; align-items: center; gap: 1rem;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+      position: relative;
+    }
+    .ow-item.locked { cursor: default; opacity: 0.45; }
+    .ow-item:not(.locked):hover { background: rgba(255,255,255,0.09); border-color: rgba(245,200,66,0.35); }
+    .ow-icon { font-size: 1.4rem; flex-shrink: 0; }
+    .ow-text { flex: 1; }
+    .ow-label { font-size: 0.9rem; color: var(--cream); }
+    .ow-days  { font-size: 0.7rem; color: rgba(255,255,255,0.4); margin-top: 0.2rem; }
+    .ow-lock  { font-size: 1rem; color: rgba(255,255,255,0.3); }
+    .ow-unlock-badge {
+      position: absolute; top: -6px; right: 10px;
+      background: var(--gold); color: #1a0a2e;
+      font-size: 0.6rem; font-weight: 700;
+      padding: 2px 8px; border-radius: 20px;
+      text-transform: uppercase; letter-spacing: 1px;
+    }
+
+    /* modal */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(10,5,20,0.85);
+      backdrop-filter: blur(6px);
+      z-index: 100;
+      display: none; align-items: center; justify-content: center;
+      padding: 1.5rem;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-box {
+      background: #1e0d38;
+      border: 1px solid rgba(245,200,66,0.3);
+      border-radius: 20px;
+      padding: 2rem 1.75rem;
+      max-width: 420px;
+      width: 100%;
+      text-align: center;
+      position: relative;
+      animation: popIn 0.3s ease;
+    }
+    @keyframes popIn {
+      from { transform: scale(0.85); opacity: 0; }
+      to   { transform: scale(1);    opacity: 1; }
+    }
+    .modal-emoji { font-size: 2.5rem; margin-bottom: 0.75rem; display: block; }
+    .modal-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      color: var(--gold);
+      margin-bottom: 1rem;
+    }
+    .modal-body {
+      font-size: 0.95rem;
+      color: rgba(255,255,255,0.8);
+      line-height: 1.75;
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+    }
+    .modal-close {
+      margin-top: 1.5rem;
+      background: none;
+      border: 1px solid rgba(255,255,255,0.2);
+      color: rgba(255,255,255,0.6);
+      padding: 0.5rem 1.5rem;
+      border-radius: 30px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .modal-close:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* ── Bucket List ── */
+    .bucket-list { display: flex; flex-direction: column; gap: 0.6rem; }
+    .bucket-item {
+      display: flex; align-items: center; gap: 0.9rem;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      cursor: pointer;
+    }
+    .bucket-item:last-child { border-bottom: none; }
+    .bucket-item.done .bucket-label { opacity: 0.45; text-decoration: line-through; }
+    .bucket-label { font-size: 0.9rem; color: var(--cream); }
+
+    /* plumeria check */
+    .plumeria-svg { flex-shrink: 0; overflow: visible; }
+
+    /* ── Couple stats ── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+    }
+    .stat-item {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem;
+      text-align: center;
+    }
+    .stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      color: var(--gold);
+      font-weight: 700;
+    }
+    .stat-desc { font-size: 0.7rem; color: rgba(255,255,255,0.45); margin-top: 0.25rem; }
+
+    /* ── World Map button ── */
+    .map-btn {
+      display: block;
+      text-align: center;
+      padding: 0.9rem;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--cream);
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      text-decoration: none;
+      letter-spacing: 0.3px;
+      transition: border-color 0.2s, background 0.2s;
+      backdrop-filter: blur(10px);
+    }
+    .map-btn:hover { border-color: rgba(245,200,66,0.5); background: rgba(255,255,255,0.09); }
+
+    /* ── Footer ── */
+    .footer {
+      text-align: center;
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.45);
+      padding-top: 1rem;
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+    }
+
+    /* ── Music player ── */
+    #music-ctrl {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.25rem;
+      z-index: 50;
+    }
+    #music-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      background: rgba(26,10,46,0.88);
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 50px;
+      padding: 0.45rem 0.9rem 0.45rem 0.75rem;
+      color: rgba(255,255,255,0.55);
+      font-size: 0.72rem;
+      cursor: pointer;
+      backdrop-filter: blur(14px);
+      transition: color 0.2s, border-color 0.2s;
+      font-family: 'Inter', sans-serif;
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+    }
+    #music-btn:hover { border-color: rgba(245,200,66,0.4); color: var(--cream); }
+    #music-btn.playing { border-color: rgba(245,200,66,0.35); color: var(--gold); }
+    .music-note { font-size: 0.95rem; }
+    .music-mute { font-size: 0.85rem; opacity: 0.75; }
+    @keyframes notePulse {
+      0%, 100% { transform: scale(1) rotate(-6deg); }
+      50%       { transform: scale(1.25) rotate(6deg); }
+    }
+    #music-btn.playing .music-note {
+      display: inline-block;
+      animation: notePulse 2.4s ease-in-out infinite;
+    }
+
+    @media (max-width: 480px) {
+      .countdown-grid { gap: 0.5rem; }
+      .count-num { font-size: 1.9rem; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+<script src="./Countdown_files/iframe_api"></script></head>
+<body data-new-gr-c-s-check-loaded="14.1136.0" data-gr-ext-installed="">
+
+<!-- Hidden YouTube audio container -->
+<iframe id="yt-container" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;overflow:hidden;top:0;left:0" frameborder="0" allowfullscreen="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" title="[Playlist] SZA - SOS Full Album with Lyrics" width="1" height="1" src="./Countdown_files/wg02Z6Tr1RY.html"></iframe>
+
+<!-- Floating music control -->
+<div id="music-ctrl">
+  <button id="music-btn" onclick="toggleMute()">
+    <span class="music-note">🎵</span>
+    <span>Special — SZA</span>
+    <span class="music-mute" id="music-icon">🔇</span>
+  </button>
+</div>
+
+<!-- Background layers -->
+<div id="stars"><div class="star" style="width: 2.60055px; height: 2.60055px; top: 64.3173%; left: 26.9865%; --d: 5.4s;"></div><div class="star" style="width: 2.90827px; height: 2.90827px; top: 45.627%; left: 30.9243%; --d: 5.4s;"></div><div class="star" style="width: 1.25522px; height: 1.25522px; top: 61.1672%; left: 77.0103%; --d: 3.8s;"></div><div class="star" style="width: 2.84944px; height: 2.84944px; top: 88.7553%; left: 90.0557%; --d: 2.7s;"></div><div class="star" style="width: 1.2878px; height: 1.2878px; top: 88.2298%; left: 22.2209%; --d: 3.1s;"></div><div class="star" style="width: 2.09608px; height: 2.09608px; top: 16.5882%; left: 5.82676%; --d: 4.1s;"></div><div class="star" style="width: 2.70948px; height: 2.70948px; top: 59.3271%; left: 93.1464%; --d: 4.2s;"></div><div class="star" style="width: 0.658636px; height: 0.658636px; top: 83.4438%; left: 77.3444%; --d: 4.2s;"></div><div class="star" style="width: 1.97177px; height: 1.97177px; top: 52.3672%; left: 97.0759%; --d: 4.8s;"></div><div class="star" style="width: 0.995377px; height: 0.995377px; top: 66.2124%; left: 53.5509%; --d: 3.0s;"></div><div class="star" style="width: 2.50979px; height: 2.50979px; top: 23.2249%; left: 71.962%; --d: 3.3s;"></div><div class="star" style="width: 1.6081px; height: 1.6081px; top: 80.1889%; left: 73.0857%; --d: 4.7s;"></div><div class="star" style="width: 0.873439px; height: 0.873439px; top: 94.3045%; left: 6.38871%; --d: 3.4s;"></div><div class="star" style="width: 1.12411px; height: 1.12411px; top: 31.696%; left: 57.415%; --d: 3.1s;"></div><div class="star" style="width: 2.201px; height: 2.201px; top: 46.4886%; left: 98.6546%; --d: 4.6s;"></div><div class="star" style="width: 0.511726px; height: 0.511726px; top: 20.0034%; left: 48.7035%; --d: 1.6s;"></div><div class="star" style="width: 1.90908px; height: 1.90908px; top: 73.7535%; left: 93.2574%; --d: 3.1s;"></div><div class="star" style="width: 2.55581px; height: 2.55581px; top: 22.7417%; left: 69.0087%; --d: 3.2s;"></div><div class="star" style="width: 2.13909px; height: 2.13909px; top: 76.9755%; left: 6.39025%; --d: 2.4s;"></div><div class="star" style="width: 2.00511px; height: 2.00511px; top: 29.5642%; left: 43.3036%; --d: 4.3s;"></div><div class="star" style="width: 2.42553px; height: 2.42553px; top: 18.93%; left: 22.8074%; --d: 3.5s;"></div><div class="star" style="width: 1.86827px; height: 1.86827px; top: 20.1113%; left: 97.4457%; --d: 2.6s;"></div><div class="star" style="width: 2.20593px; height: 2.20593px; top: 57.1031%; left: 56.9411%; --d: 3.7s;"></div><div class="star" style="width: 0.947344px; height: 0.947344px; top: 64.3922%; left: 98.3035%; --d: 2.6s;"></div><div class="star" style="width: 0.962347px; height: 0.962347px; top: 52.6244%; left: 7.21063%; --d: 5.4s;"></div><div class="star" style="width: 0.558094px; height: 0.558094px; top: 9.01563%; left: 97.2256%; --d: 5.1s;"></div><div class="star" style="width: 2.05469px; height: 2.05469px; top: 89.4456%; left: 44.3389%; --d: 3.3s;"></div><div class="star" style="width: 2.95794px; height: 2.95794px; top: 79.9742%; left: 71.7251%; --d: 1.7s;"></div><div class="star" style="width: 1.05733px; height: 1.05733px; top: 54.2217%; left: 64.2884%; --d: 2.2s;"></div><div class="star" style="width: 1.51759px; height: 1.51759px; top: 85.4929%; left: 48.0596%; --d: 3.7s;"></div><div class="star" style="width: 2.36804px; height: 2.36804px; top: 79.7052%; left: 92.0477%; --d: 3.7s;"></div><div class="star" style="width: 1.50007px; height: 1.50007px; top: 51.9701%; left: 61.4848%; --d: 4.8s;"></div><div class="star" style="width: 2.1617px; height: 2.1617px; top: 30.5037%; left: 86.0856%; --d: 3.5s;"></div><div class="star" style="width: 2.54818px; height: 2.54818px; top: 96.506%; left: 4.67723%; --d: 3.4s;"></div><div class="star" style="width: 2.98354px; height: 2.98354px; top: 7.2924%; left: 37.667%; --d: 4.2s;"></div><div class="star" style="width: 1.51986px; height: 1.51986px; top: 41.368%; left: 60.1249%; --d: 4.6s;"></div><div class="star" style="width: 0.739327px; height: 0.739327px; top: 76.3816%; left: 21.9775%; --d: 4.4s;"></div><div class="star" style="width: 1.06px; height: 1.06px; top: 81.0275%; left: 53.253%; --d: 2.6s;"></div><div class="star" style="width: 1.14462px; height: 1.14462px; top: 64.7964%; left: 33.7385%; --d: 3.7s;"></div><div class="star" style="width: 0.603615px; height: 0.603615px; top: 13.4727%; left: 99.9083%; --d: 2.6s;"></div><div class="star" style="width: 1.6502px; height: 1.6502px; top: 64.6028%; left: 3.04868%; --d: 2.2s;"></div><div class="star" style="width: 1.34031px; height: 1.34031px; top: 7.3071%; left: 37.3088%; --d: 2.9s;"></div><div class="star" style="width: 2.17619px; height: 2.17619px; top: 59.6415%; left: 25.9417%; --d: 3.4s;"></div><div class="star" style="width: 0.7067px; height: 0.7067px; top: 11.9306%; left: 37.4079%; --d: 3.9s;"></div><div class="star" style="width: 2.60384px; height: 2.60384px; top: 6.88476%; left: 37.2493%; --d: 2.9s;"></div><div class="star" style="width: 0.870359px; height: 0.870359px; top: 51.9372%; left: 34.2268%; --d: 5.2s;"></div><div class="star" style="width: 1.8817px; height: 1.8817px; top: 49.7598%; left: 32.486%; --d: 4.4s;"></div><div class="star" style="width: 0.819682px; height: 0.819682px; top: 23.966%; left: 30.2045%; --d: 2.5s;"></div><div class="star" style="width: 1.72981px; height: 1.72981px; top: 40.2336%; left: 45.0617%; --d: 3.6s;"></div><div class="star" style="width: 0.885582px; height: 0.885582px; top: 90.5489%; left: 63.1811%; --d: 2.5s;"></div><div class="star" style="width: 2.73391px; height: 2.73391px; top: 67.0922%; left: 72.9518%; --d: 2.3s;"></div><div class="star" style="width: 2.93968px; height: 2.93968px; top: 62.1925%; left: 88.6232%; --d: 4.5s;"></div><div class="star" style="width: 1.70623px; height: 1.70623px; top: 1.16274%; left: 66.426%; --d: 5.4s;"></div><div class="star" style="width: 1.49697px; height: 1.49697px; top: 96.6366%; left: 67.713%; --d: 1.7s;"></div><div class="star" style="width: 0.598305px; height: 0.598305px; top: 22.2372%; left: 95.8059%; --d: 4.9s;"></div><div class="star" style="width: 0.675609px; height: 0.675609px; top: 57.5043%; left: 85.5626%; --d: 1.6s;"></div><div class="star" style="width: 1.46649px; height: 1.46649px; top: 0.340517%; left: 9.39179%; --d: 2.9s;"></div><div class="star" style="width: 2.3555px; height: 2.3555px; top: 30.1011%; left: 86.1878%; --d: 3.0s;"></div><div class="star" style="width: 2.76905px; height: 2.76905px; top: 82.8235%; left: 62.0503%; --d: 2.7s;"></div><div class="star" style="width: 0.615172px; height: 0.615172px; top: 61.7004%; left: 70.1341%; --d: 3.8s;"></div><div class="star" style="width: 1.98027px; height: 1.98027px; top: 51.8342%; left: 39.3046%; --d: 3.2s;"></div><div class="star" style="width: 1.12745px; height: 1.12745px; top: 53.0537%; left: 45.7882%; --d: 4.1s;"></div><div class="star" style="width: 2.05093px; height: 2.05093px; top: 24.6089%; left: 75.9264%; --d: 2.5s;"></div><div class="star" style="width: 0.955744px; height: 0.955744px; top: 28.602%; left: 61.4025%; --d: 2.2s;"></div><div class="star" style="width: 2.81163px; height: 2.81163px; top: 30.9362%; left: 29.1245%; --d: 2.8s;"></div><div class="star" style="width: 0.950907px; height: 0.950907px; top: 11.2455%; left: 12.4711%; --d: 4.2s;"></div><div class="star" style="width: 0.652508px; height: 0.652508px; top: 50.4875%; left: 80.9735%; --d: 3.4s;"></div><div class="star" style="width: 0.855254px; height: 0.855254px; top: 58.6582%; left: 18.2256%; --d: 1.8s;"></div><div class="star" style="width: 1.9079px; height: 1.9079px; top: 75.1399%; left: 49.2957%; --d: 2.0s;"></div><div class="star" style="width: 0.541745px; height: 0.541745px; top: 4.38442%; left: 50.713%; --d: 4.1s;"></div><div class="star" style="width: 2.649px; height: 2.649px; top: 92.1284%; left: 75.0837%; --d: 4.1s;"></div><div class="star" style="width: 1.46508px; height: 1.46508px; top: 82.0178%; left: 61.1676%; --d: 2.2s;"></div><div class="star" style="width: 1.13188px; height: 1.13188px; top: 97.3808%; left: 53.7207%; --d: 3.7s;"></div><div class="star" style="width: 2.18605px; height: 2.18605px; top: 1.62362%; left: 15.698%; --d: 4.7s;"></div><div class="star" style="width: 2.16733px; height: 2.16733px; top: 33.3935%; left: 59.7577%; --d: 3.6s;"></div><div class="star" style="width: 0.760917px; height: 0.760917px; top: 62.9773%; left: 9.83866%; --d: 4.1s;"></div><div class="star" style="width: 1.97504px; height: 1.97504px; top: 83.1014%; left: 93.8527%; --d: 4.3s;"></div><div class="star" style="width: 2.28683px; height: 2.28683px; top: 73.7133%; left: 13.524%; --d: 2.6s;"></div><div class="star" style="width: 2.10274px; height: 2.10274px; top: 90.3246%; left: 78.2114%; --d: 2.2s;"></div><div class="star" style="width: 0.750897px; height: 0.750897px; top: 12.0116%; left: 3.76234%; --d: 5.3s;"></div><div class="star" style="width: 0.791846px; height: 0.791846px; top: 28.2912%; left: 66.2265%; --d: 1.7s;"></div><div class="star" style="width: 1.12222px; height: 1.12222px; top: 83.692%; left: 7.42018%; --d: 4.4s;"></div><div class="star" style="width: 0.675195px; height: 0.675195px; top: 60.3054%; left: 66.8996%; --d: 4.5s;"></div><div class="star" style="width: 2.12355px; height: 2.12355px; top: 54.1986%; left: 65.6499%; --d: 2.3s;"></div><div class="star" style="width: 1.77092px; height: 1.77092px; top: 1.04132%; left: 55.167%; --d: 4.9s;"></div><div class="star" style="width: 2.8253px; height: 2.8253px; top: 43.3365%; left: 44.5926%; --d: 4.9s;"></div><div class="star" style="width: 2.68886px; height: 2.68886px; top: 6.94149%; left: 27.7401%; --d: 1.5s;"></div><div class="star" style="width: 2.74576px; height: 2.74576px; top: 59.1368%; left: 53.2773%; --d: 3.4s;"></div><div class="star" style="width: 2.29092px; height: 2.29092px; top: 80.0906%; left: 50.7378%; --d: 1.8s;"></div><div class="star" style="width: 2.78563px; height: 2.78563px; top: 64.3491%; left: 70.6918%; --d: 2.1s;"></div><div class="star" style="width: 1.87373px; height: 1.87373px; top: 79.299%; left: 58.3702%; --d: 3.8s;"></div><div class="star" style="width: 0.963106px; height: 0.963106px; top: 26.177%; left: 23.7755%; --d: 5.2s;"></div><div class="star" style="width: 1.99241px; height: 1.99241px; top: 31.1199%; left: 92.5556%; --d: 2.1s;"></div><div class="star" style="width: 2.74455px; height: 2.74455px; top: 55.0233%; left: 7.24113%; --d: 4.4s;"></div><div class="star" style="width: 1.82264px; height: 1.82264px; top: 42.417%; left: 13.1643%; --d: 1.7s;"></div><div class="star" style="width: 1.18273px; height: 1.18273px; top: 3.27424%; left: 77.7222%; --d: 5.0s;"></div><div class="star" style="width: 1.48449px; height: 1.48449px; top: 12.3365%; left: 41.9625%; --d: 3.8s;"></div><div class="star" style="width: 1.89763px; height: 1.89763px; top: 91.7887%; left: 2.50868%; --d: 3.0s;"></div><div class="star" style="width: 1.42273px; height: 1.42273px; top: 57.5846%; left: 20.0575%; --d: 2.8s;"></div><div class="star" style="width: 0.706527px; height: 0.706527px; top: 72.0707%; left: 95.4336%; --d: 3.9s;"></div><div class="star" style="width: 2.79365px; height: 2.79365px; top: 14.1458%; left: 19.13%; --d: 4.8s;"></div><div class="star" style="width: 0.802267px; height: 0.802267px; top: 13.9675%; left: 93.5072%; --d: 4.7s;"></div><div class="star" style="width: 0.842835px; height: 0.842835px; top: 52.6668%; left: 28.8194%; --d: 4.1s;"></div><div class="star" style="width: 1.43983px; height: 1.43983px; top: 30.3516%; left: 4.82619%; --d: 4.1s;"></div><div class="star" style="width: 1.35144px; height: 1.35144px; top: 32.563%; left: 81.7247%; --d: 4.7s;"></div><div class="star" style="width: 0.739066px; height: 0.739066px; top: 98.2843%; left: 29.2874%; --d: 3.4s;"></div><div class="star" style="width: 0.836304px; height: 0.836304px; top: 78.3552%; left: 37.1685%; --d: 3.3s;"></div><div class="star" style="width: 2.67221px; height: 2.67221px; top: 70.8287%; left: 71.5774%; --d: 3.5s;"></div><div class="star" style="width: 0.849513px; height: 0.849513px; top: 48.5061%; left: 44.8247%; --d: 3.0s;"></div><div class="star" style="width: 2.22759px; height: 2.22759px; top: 84.2198%; left: 31.1291%; --d: 2.0s;"></div><div class="star" style="width: 1.46581px; height: 1.46581px; top: 90.4075%; left: 77.7147%; --d: 2.5s;"></div><div class="star" style="width: 2.48103px; height: 2.48103px; top: 11.2561%; left: 24.4383%; --d: 1.9s;"></div><div class="star" style="width: 0.814373px; height: 0.814373px; top: 13.6493%; left: 41.552%; --d: 2.3s;"></div><div class="star" style="width: 2.73408px; height: 2.73408px; top: 10.7403%; left: 90.1412%; --d: 3.4s;"></div><div class="star" style="width: 0.996473px; height: 0.996473px; top: 68.6523%; left: 9.36465%; --d: 3.8s;"></div><div class="star" style="width: 0.735252px; height: 0.735252px; top: 69.0666%; left: 76.0332%; --d: 2.9s;"></div><div class="star" style="width: 0.935048px; height: 0.935048px; top: 3.38966%; left: 27.2599%; --d: 4.5s;"></div><div class="star" style="width: 2.59313px; height: 2.59313px; top: 8.94754%; left: 43.8382%; --d: 4.1s;"></div><div class="star" style="width: 1.48579px; height: 1.48579px; top: 59.4737%; left: 66.9025%; --d: 4.9s;"></div><div class="star" style="width: 2.14405px; height: 2.14405px; top: 78.9305%; left: 65.2715%; --d: 3.1s;"></div></div>
+
+<div class="page">
+
+  <!-- Hero -->
+  <div class="hero">
+    <h1 class="hero-title">Countdown <span class="pulse-heart beat">💛</span></h1>
+  </div>
+
+  <!-- Countdown -->
+  <div class="card">
+    <p class="card-title">Time Remaining</p>
+    <div class="countdown-grid">
+      <div class="count-box"><span class="count-num" id="cd-days">61</span><span class="count-label">Days</span></div>
+      <div class="count-box"><span class="count-num" id="cd-hrs">20</span><span class="count-label">Hours</span></div>
+      <div class="count-box"><span class="count-num" id="cd-min">59</span><span class="count-label">Minutes</span></div>
+      <div class="count-box"><span class="count-num" id="cd-sec">04</span><span class="count-label">Seconds</span></div>
+    </div>
+  </div>
+
+  <!-- Journey -->
+  <div class="card">
+    <p class="card-title">The Journey · La Réunion → Paris</p>
+    <div id="journey-map" class="leaflet-container leaflet-touch leaflet-retina leaflet-fade-anim" tabindex="0" style="position: relative;"><div class="leaflet-pane leaflet-map-pane" style="transform: translate3d(0px, 0px, 0px);"><div class="leaflet-pane leaflet-tile-pane"><div class="leaflet-layer " style="z-index: 1; opacity: 1;"><div class="leaflet-tile-container leaflet-zoom-animated" style="z-index: 19; transform: translate3d(0px, 0px, 0px) scale(1);"><img alt="" src="./Countdown_files/0@2x.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(43px, -94px, 0px); opacity: 1;"><img alt="" src="./Countdown_files/0@2x(1).png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(299px, -94px, 0px); opacity: 1;"><img alt="" src="./Countdown_files/1@2x.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(43px, 162px, 0px); opacity: 1;"><img alt="" src="./Countdown_files/1@2x(1).png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(299px, 162px, 0px); opacity: 1;"><img alt="" src="./Countdown_files/0@2x(1).png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(-213px, -94px, 0px); opacity: 1;"><img alt="" src="./Countdown_files/0@2x.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(555px, -94px, 0px); opacity: 1;"><img alt="" src="./Countdown_files/1@2x(1).png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(-213px, 162px, 0px); opacity: 1;"><img alt="" src="./Countdown_files/1@2x.png" class="leaflet-tile leaflet-tile-loaded" style="width: 256px; height: 256px; transform: translate3d(555px, 162px, 0px); opacity: 1;"></div></div></div><div class="leaflet-pane leaflet-overlay-pane"><svg pointer-events="none" class="leaflet-zoom-animated" width="804" height="336" viewBox="-67 -28 804 336" style="transform: translate3d(-67px, -28px, 0px);"><g><path class="leaflet-interactive" stroke="rgba(245,200,66,0.5)" stroke-opacity="1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="6 9" fill="none" d="M378 193L337 123L321 101L302 82"></path><path class="leaflet-interactive" stroke="#ff8fab" stroke-opacity="1" stroke-width="0" stroke-linecap="round" stroke-linejoin="round" fill="#ff8fab" fill-opacity="1" fill-rule="evenodd" d="M373,193a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0 "></path></g></svg></div><div class="leaflet-pane leaflet-shadow-pane"></div><div class="leaflet-pane leaflet-marker-pane"><div class="leaflet-marker-icon leaflet-zoom-animated leaflet-interactive" tabindex="0" role="button" style="margin-left: -10px; margin-top: -18px; width: 20px; height: 20px; transform: translate3d(302px, 82px, 0px); z-index: 82;"><div style="font-size:1.1rem;line-height:1;filter:drop-shadow(0 0 4px rgba(245,200,66,0.8))">💛</div></div><div class="leaflet-marker-icon leaflet-zoom-animated leaflet-interactive" tabindex="0" role="button" style="margin-left: -11px; margin-top: -11px; width: 22px; height: 22px; transform: translate3d(369px, 178px, 0px); z-index: 178;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="-20 -20 40 40" width="22" height="22">
+      <defs>
+        <radialgradient id="fg" cx="0" cy="0" r="14" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#f7e55a"></stop>
+          <stop offset="38%" stop-color="#fdfdf0"></stop>
+          <stop offset="100%" stop-color="white"></stop>
+        </radialgradient>
+      </defs>
+      <ellipse rx="5" ry="10.5" fill="url(#fg)" transform="rotate(0) translate(0,-7)"></ellipse>
+      <ellipse rx="5" ry="10.5" fill="url(#fg)" transform="rotate(72) translate(0,-7)"></ellipse>
+      <ellipse rx="5" ry="10.5" fill="url(#fg)" transform="rotate(144) translate(0,-7)"></ellipse>
+      <ellipse rx="5" ry="10.5" fill="url(#fg)" transform="rotate(216) translate(0,-7)"></ellipse>
+      <ellipse rx="5" ry="10.5" fill="url(#fg)" transform="rotate(288) translate(0,-7)"></ellipse>
+      <circle r="5.5" fill="#f5c842"></circle>
+      <circle r="3" fill="#e09800" opacity="0.65"></circle>
+    </svg></div></div><div class="leaflet-pane leaflet-tooltip-pane"></div><div class="leaflet-pane leaflet-popup-pane"></div><div class="leaflet-proxy leaflet-zoom-animated" style="transform: translate3d(291.556px, 234.358px, 0px) scale(1);"></div></div><div class="leaflet-control-container"><div class="leaflet-top leaflet-left"></div><div class="leaflet-top leaflet-right"></div><div class="leaflet-bottom leaflet-left"></div><div class="leaflet-bottom leaflet-right"></div></div></div>
+    <div class="journey-bar-wrap">
+      <div class="journey-bar-labels">
+        <span>🌺 La Réunion</span>
+        <span id="progress-pct">13%</span>
+        <span>Paris 💛</span>
+      </div>
+      <div class="journey-bar-track">
+        <div class="journey-bar-fill" id="journey-bar-fill" style="width: 13%;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bucket List -->
+  <div class="card">
+    <p class="card-title">Things I want to do with you</p>
+    <div class="bucket-list" id="bucket-list"><div class="bucket-item">
+      <svg class="plumeria-svg" xmlns="http://www.w3.org/2000/svg" viewBox="-18 -18 36 36" width="36" height="36">
+        <defs>
+          <radialgradient id="plg0" cx="0" cy="0" r="15" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#f5d555"></stop>
+            <stop offset="22%" stop-color="#ffc8dc"></stop>
+            <stop offset="65%" stop-color="#e0406a"></stop>
+            <stop offset="100%" stop-color="#a01830"></stop>
+          </radialgradient>
+        </defs>
+        <!-- Bud: 3 folded petals huddled upright -->
+        <g class="bud" style="opacity:1;transition:opacity 0.3s">
+          <ellipse rx="2.8" ry="9" fill="#ffc8d8" transform="rotate(-20) translate(0,-3)"></ellipse>
+          <ellipse rx="3.2" ry="10" fill="#ffaec8" transform="rotate(0) translate(0,-4)"></ellipse>
+          <ellipse rx="2.8" ry="9" fill="#ffc8d8" transform="rotate(20) translate(0,-3)"></ellipse>
+          <circle r="4" fill="#f5c842"></circle>
+          <circle r="2.2" fill="#e09800" opacity="0.7"></circle>
+        </g>
+        <!-- Bloom: full 5-petal plumeria -->
+        <g class="bloom" style="opacity:0;transition:opacity 0.5s 0.1s">
+          <ellipse rx="5.5" ry="12" fill="url(#plg0)" transform="rotate(0) translate(0,-7)"></ellipse>
+          <ellipse rx="5.5" ry="12" fill="url(#plg0)" transform="rotate(72) translate(0,-7)"></ellipse>
+          <ellipse rx="5.5" ry="12" fill="url(#plg0)" transform="rotate(144) translate(0,-7)"></ellipse>
+          <ellipse rx="5.5" ry="12" fill="url(#plg0)" transform="rotate(216) translate(0,-7)"></ellipse>
+          <ellipse rx="5.5" ry="12" fill="url(#plg0)" transform="rotate(288) translate(0,-7)"></ellipse>
+          <circle r="5.5" fill="#f5c842"></circle>
+          <circle r="3" fill="#e09800" opacity="0.7"></circle>
+        </g>
+      </svg>
+      <span class="bucket-label">Surfing</span>
+    </div><div class="bucket-item">
+      <svg class="plumeria-svg" xmlns="http://www.w3.org/2000/svg" viewBox="-18 -18 36 36" width="36" height="36">
+        <defs>
+          <radialgradient id="plg1" cx="0" cy="0" r="15" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#f5d555"></stop>
+            <stop offset="22%" stop-color="#ffc8dc"></stop>
+            <stop offset="65%" stop-color="#e0406a"></stop>
+            <stop offset="100%" stop-color="#a01830"></stop>
+          </radialgradient>
+        </defs>
+        <!-- Bud: 3 folded petals huddled upright -->
+        <g class="bud" style="opacity:1;transition:opacity 0.3s">
+          <ellipse rx="2.8" ry="9" fill="#ffc8d8" transform="rotate(-20) translate(0,-3)"></ellipse>
+          <ellipse rx="3.2" ry="10" fill="#ffaec8" transform="rotate(0) translate(0,-4)"></ellipse>
+          <ellipse rx="2.8" ry="9" fill="#ffc8d8" transform="rotate(20) translate(0,-3)"></ellipse>
+          <circle r="4" fill="#f5c842"></circle>
+          <circle r="2.2" fill="#e09800" opacity="0.7"></circle>
+        </g>
+        <!-- Bloom: full 5-petal plumeria -->
+        <g class="bloom" style="opacity:0;transition:opacity 0.5s 0.1s">
+          <ellipse rx="5.5" ry="12" fill="url(#plg1)" transform="rotate(0) translate(0,-7)"></ellipse>
+          <ellipse rx="5.5" ry="12" fill="url(#plg1)" transform="rotate(72) translate(0,-7)"></ellipse>
+          <ellipse rx="5.5" ry="12" fill="url(#plg1)" transform="rotate(144) translate(0,-7)"></ellipse>
+          <ellipse rx="5.5" ry="12" fill="url(#plg1)" transform="rotate(216) translate(0,-7)"></ellipse>
+          <ellipse rx="5.5" ry="12" fill="url(#plg1)" transform="rotate(288) translate(0,-7)"></ellipse>
+          <circle r="5.5" fill="#f5c842"></circle>
+          <circle r="3" fill="#e09800" opacity="0.7"></circle>
+        </g>
+      </svg>
+      <span class="bucket-label">Windsurfing</span>
+    </div><div class="bucket-item">
+      <svg class="plumeria-svg" xmlns="http://www.w3.org/2000/svg" viewBox="-18 -18 36 36" width="36" height="36">
+        <defs>
+          <radialgradient id="plg2" cx="0" cy="0" r="15" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#f5d555"></stop>
+            <stop offset="22%" stop-color="#ffc8dc"></stop>
+            <stop offset="65%" stop-color="#e0406a"></stop>
+            <stop offset="100%" stop-color="#a01830"></stop>
+          </radialgradient>
+        </defs>
+        <!-- Bud: 3 folded petals huddled upright -->
+        <g class="bud" style="opacity:1;transition:opacity 0.3s">
+          <ellipse rx="2.8" ry="9" fill="#ffc8d8" transform="rotate(-20) translate(0,-3)"></ellipse>
+          <ellipse rx="3.2" ry="10" fill="#ffaec8" transform="rotate(0) translate(0,-4)"></ellipse>
+          <ellipse rx="2.8" ry="9" fill="#ffc8d8" transform="rotate(20) translate(0,-3)"></ellipse>
+          <circle r="4" fill="#f5c842"></circle>
+          <circle r="2.2" fill="#e09800" opacity="0.7"></circle>
+        </g>
+        <!-- Bloom: full 5-petal plumeria -->
+        <g class="bloom" style="opacity:0;transition:opacity 0.5s 0.1s">
+          <ellipse rx="5.5" ry="12" fill="url(#plg2)" transform="rotate(0) translate(0,-7)"></ellipse>
+          <ellipse rx="5.5" ry="12" fill="url(#plg2)" transform="rotate(72) translate(0,-7)"></ellipse>
+          <ellipse rx="5.5" ry="12" fill="url(#plg2)" transform="rotate(144) translate(0,-7)"></ellipse>
+          <ellipse rx="5.5" ry="12" fill="url(#plg2)" transform="rotate(216) translate(0,-7)"></ellipse>
+          <ellipse rx="5.5" ry="12" fill="url(#plg2)" transform="rotate(288) translate(0,-7)"></ellipse>
+          <circle r="5.5" fill="#f5c842"></circle>
+          <circle r="3" fill="#e09800" opacity="0.7"></circle>
+        </g>
+      </svg>
+      <span class="bucket-label">Scuba Diving</span>
+    </div><div class="bucket-item">
+      <svg class="plumeria-svg" xmlns="http://www.w3.org/2000/svg" viewBox="-18 -18 36 36" width="36" height="36">
+        <defs>
+          <radialgradient id="plg3" cx="0" cy="0" r="15" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#f5d555"></stop>
+            <stop offset="22%" stop-color="#ffc8dc"></stop>
+            <stop offset="65%" stop-color="#e0406a"></stop>
+            <stop offset="100%" stop-color="#a01830"></stop>
+          </radialgradient>
+        </defs>
+        <!-- Bud: 3 folded petals huddled upright -->
+        <g class="bud" style="opacity:1;transition:opacity 0.3s">
+          <ellipse rx="2.8" ry="9" fill="#ffc8d8" transform="rotate(-20) translate(0,-3)"></ellipse>
+          <ellipse rx="3.2" ry="10" fill="#ffaec8" transform="rotate(0) translate(0,-4)"></ellipse>
+          <ellipse rx="2.8" ry="9" fill="#ffc8d8" transform="rotate(20) translate(0,-3)"></ellipse>
+          <circle r="4" fill="#f5c842"></circle>
+          <circle r="2.2" fill="#e09800" opacity="0.7"></circle>
+        </g>
+        <!-- Bloom: full 5-petal plumeria -->
+        <g class="bloom" style="opacity:0;transition:opacity 0.5s 0.1s">
+          <ellipse rx="5.5" ry="12" fill="url(#plg3)" transform="rotate(0) translate(0,-7)"></ellipse>
+          <ellipse rx="5.5" ry="12" fill="url(#plg3)" transform="rotate(72) translate(0,-7)"></ellipse>
+          <ellipse rx="5.5" ry="12" fill="url(#plg3)" transform="rotate(144) translate(0,-7)"></ellipse>
+          <ellipse rx="5.5" ry="12" fill="url(#plg3)" transform="rotate(216) translate(0,-7)"></ellipse>
+          <ellipse rx="5.5" ry="12" fill="url(#plg3)" transform="rotate(288) translate(0,-7)"></ellipse>
+          <circle r="5.5" fill="#f5c842"></circle>
+          <circle r="3" fill="#e09800" opacity="0.7"></circle>
+        </g>
+      </svg>
+      <span class="bucket-label">Swim with a whale</span>
+    </div><div class="bucket-item">
+      <svg class="plumeria-svg" xmlns="http://www.w3.org/2000/svg" viewBox="-18 -18 36 36" width="36" height="36">
+        <defs>
+          <radialgradient id="plg4" cx="0" cy="0" r="15" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#f5d555"></stop>
+            <stop offset="22%" stop-color="#ffc8dc"></stop>
+            <stop offset="65%" stop-color="#e0406a"></stop>
+            <stop offset="100%" stop-color="#a01830"></stop>
+          </radialgradient>
+        </defs>
+        <!-- Bud: 3 folded petals huddled upright -->
+        <g class="bud" style="opacity:1;transition:opacity 0.3s">
+          <ellipse rx="2.8" ry="9" fill="#ffc8d8" transform="rotate(-20) translate(0,-3)"></ellipse>
+          <ellipse rx="3.2" ry="10" fill="#ffaec8" transform="rotate(0) translate(0,-4)"></ellipse>
+          <ellipse rx="2.8" ry="9" fill="#ffc8d8" transform="rotate(20) translate(0,-3)"></ellipse>
+          <circle r="4" fill="#f5c842"></circle>
+          <circle r="2.2" fill="#e09800" opacity="0.7"></circle>
+        </g>
+        <!-- Bloom: full 5-petal plumeria -->
+        <g class="bloom" style="opacity:0;transition:opacity 0.5s 0.1s">
+          <ellipse rx="5.5" ry="12" fill="url(#plg4)" transform="rotate(0) translate(0,-7)"></ellipse>
+          <ellipse rx="5.5" ry="12" fill="url(#plg4)" transform="rotate(72) translate(0,-7)"></ellipse>
+          <ellipse rx="5.5" ry="12" fill="url(#plg4)" transform="rotate(144) translate(0,-7)"></ellipse>
+          <ellipse rx="5.5" ry="12" fill="url(#plg4)" transform="rotate(216) translate(0,-7)"></ellipse>
+          <ellipse rx="5.5" ry="12" fill="url(#plg4)" transform="rotate(288) translate(0,-7)"></ellipse>
+          <circle r="5.5" fill="#f5c842"></circle>
+          <circle r="3" fill="#e09800" opacity="0.7"></circle>
+        </g>
+      </svg>
+      <span class="bucket-label">Skydiving</span>
+    </div><div class="bucket-item">
+      <svg class="plumeria-svg" xmlns="http://www.w3.org/2000/svg" viewBox="-18 -18 36 36" width="36" height="36">
+        <defs>
+          <radialgradient id="plg5" cx="0" cy="0" r="15" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#f5d555"></stop>
+            <stop offset="22%" stop-color="#ffc8dc"></stop>
+            <stop offset="65%" stop-color="#e0406a"></stop>
+            <stop offset="100%" stop-color="#a01830"></stop>
+          </radialgradient>
+        </defs>
+        <!-- Bud: 3 folded petals huddled upright -->
+        <g class="bud" style="opacity:1;transition:opacity 0.3s">
+          <ellipse rx="2.8" ry="9" fill="#ffc8d8" transform="rotate(-20) translate(0,-3)"></ellipse>
+          <ellipse rx="3.2" ry="10" fill="#ffaec8" transform="rotate(0) translate(0,-4)"></ellipse>
+          <ellipse rx="2.8" ry="9" fill="#ffc8d8" transform="rotate(20) translate(0,-3)"></ellipse>
+          <circle r="4" fill="#f5c842"></circle>
+          <circle r="2.2" fill="#e09800" opacity="0.7"></circle>
+        </g>
+        <!-- Bloom: full 5-petal plumeria -->
+        <g class="bloom" style="opacity:0;transition:opacity 0.5s 0.1s">
+          <ellipse rx="5.5" ry="12" fill="url(#plg5)" transform="rotate(0) translate(0,-7)"></ellipse>
+          <ellipse rx="5.5" ry="12" fill="url(#plg5)" transform="rotate(72) translate(0,-7)"></ellipse>
+          <ellipse rx="5.5" ry="12" fill="url(#plg5)" transform="rotate(144) translate(0,-7)"></ellipse>
+          <ellipse rx="5.5" ry="12" fill="url(#plg5)" transform="rotate(216) translate(0,-7)"></ellipse>
+          <ellipse rx="5.5" ry="12" fill="url(#plg5)" transform="rotate(288) translate(0,-7)"></ellipse>
+          <circle r="5.5" fill="#f5c842"></circle>
+          <circle r="3" fill="#e09800" opacity="0.7"></circle>
+        </g>
+      </svg>
+      <span class="bucket-label">Free dive at 20M</span>
+    </div><div class="bucket-item">
+      <svg class="plumeria-svg" xmlns="http://www.w3.org/2000/svg" viewBox="-18 -18 36 36" width="36" height="36">
+        <defs>
+          <radialgradient id="plg6" cx="0" cy="0" r="15" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#f5d555"></stop>
+            <stop offset="22%" stop-color="#ffc8dc"></stop>
+            <stop offset="65%" stop-color="#e0406a"></stop>
+            <stop offset="100%" stop-color="#a01830"></stop>
+          </radialgradient>
+        </defs>
+        <!-- Bud: 3 folded petals huddled upright -->
+        <g class="bud" style="opacity:1;transition:opacity 0.3s">
+          <ellipse rx="2.8" ry="9" fill="#ffc8d8" transform="rotate(-20) translate(0,-3)"></ellipse>
+          <ellipse rx="3.2" ry="10" fill="#ffaec8" transform="rotate(0) translate(0,-4)"></ellipse>
+          <ellipse rx="2.8" ry="9" fill="#ffc8d8" transform="rotate(20) translate(0,-3)"></ellipse>
+          <circle r="4" fill="#f5c842"></circle>
+          <circle r="2.2" fill="#e09800" opacity="0.7"></circle>
+        </g>
+        <!-- Bloom: full 5-petal plumeria -->
+        <g class="bloom" style="opacity:0;transition:opacity 0.5s 0.1s">
+          <ellipse rx="5.5" ry="12" fill="url(#plg6)" transform="rotate(0) translate(0,-7)"></ellipse>
+          <ellipse rx="5.5" ry="12" fill="url(#plg6)" transform="rotate(72) translate(0,-7)"></ellipse>
+          <ellipse rx="5.5" ry="12" fill="url(#plg6)" transform="rotate(144) translate(0,-7)"></ellipse>
+          <ellipse rx="5.5" ry="12" fill="url(#plg6)" transform="rotate(216) translate(0,-7)"></ellipse>
+          <ellipse rx="5.5" ry="12" fill="url(#plg6)" transform="rotate(288) translate(0,-7)"></ellipse>
+          <circle r="5.5" fill="#f5c842"></circle>
+          <circle r="3" fill="#e09800" opacity="0.7"></circle>
+        </g>
+      </svg>
+      <span class="bucket-label">Cliff jumps</span>
+    </div><div class="bucket-item">
+      <svg class="plumeria-svg" xmlns="http://www.w3.org/2000/svg" viewBox="-18 -18 36 36" width="36" height="36">
+        <defs>
+          <radialgradient id="plg7" cx="0" cy="0" r="15" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#f5d555"></stop>
+            <stop offset="22%" stop-color="#ffc8dc"></stop>
+            <stop offset="65%" stop-color="#e0406a"></stop>
+            <stop offset="100%" stop-color="#a01830"></stop>
+          </radialgradient>
+        </defs>
+        <!-- Bud: 3 folded petals huddled upright -->
+        <g class="bud" style="opacity:1;transition:opacity 0.3s">
+          <ellipse rx="2.8" ry="9" fill="#ffc8d8" transform="rotate(-20) translate(0,-3)"></ellipse>
+          <ellipse rx="3.2" ry="10" fill="#ffaec8" transform="rotate(0) translate(0,-4)"></ellipse>
+          <ellipse rx="2.8" ry="9" fill="#ffc8d8" transform="rotate(20) translate(0,-3)"></ellipse>
+          <circle r="4" fill="#f5c842"></circle>
+          <circle r="2.2" fill="#e09800" opacity="0.7"></circle>
+        </g>
+        <!-- Bloom: full 5-petal plumeria -->
+        <g class="bloom" style="opacity:0;transition:opacity 0.5s 0.1s">
+          <ellipse rx="5.5" ry="12" fill="url(#plg7)" transform="rotate(0) translate(0,-7)"></ellipse>
+          <ellipse rx="5.5" ry="12" fill="url(#plg7)" transform="rotate(72) translate(0,-7)"></ellipse>
+          <ellipse rx="5.5" ry="12" fill="url(#plg7)" transform="rotate(144) translate(0,-7)"></ellipse>
+          <ellipse rx="5.5" ry="12" fill="url(#plg7)" transform="rotate(216) translate(0,-7)"></ellipse>
+          <ellipse rx="5.5" ry="12" fill="url(#plg7)" transform="rotate(288) translate(0,-7)"></ellipse>
+          <circle r="5.5" fill="#f5c842"></circle>
+          <circle r="3" fill="#e09800" opacity="0.7"></circle>
+        </g>
+      </svg>
+      <span class="bucket-label">Discover new islands together</span>
+    </div><div class="bucket-item">
+      <svg class="plumeria-svg" xmlns="http://www.w3.org/2000/svg" viewBox="-18 -18 36 36" width="36" height="36">
+        <defs>
+          <radialgradient id="plg8" cx="0" cy="0" r="15" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#f5d555"></stop>
+            <stop offset="22%" stop-color="#ffc8dc"></stop>
+            <stop offset="65%" stop-color="#e0406a"></stop>
+            <stop offset="100%" stop-color="#a01830"></stop>
+          </radialgradient>
+        </defs>
+        <!-- Bud: 3 folded petals huddled upright -->
+        <g class="bud" style="opacity:1;transition:opacity 0.3s">
+          <ellipse rx="2.8" ry="9" fill="#ffc8d8" transform="rotate(-20) translate(0,-3)"></ellipse>
+          <ellipse rx="3.2" ry="10" fill="#ffaec8" transform="rotate(0) translate(0,-4)"></ellipse>
+          <ellipse rx="2.8" ry="9" fill="#ffc8d8" transform="rotate(20) translate(0,-3)"></ellipse>
+          <circle r="4" fill="#f5c842"></circle>
+          <circle r="2.2" fill="#e09800" opacity="0.7"></circle>
+        </g>
+        <!-- Bloom: full 5-petal plumeria -->
+        <g class="bloom" style="opacity:0;transition:opacity 0.5s 0.1s">
+          <ellipse rx="5.5" ry="12" fill="url(#plg8)" transform="rotate(0) translate(0,-7)"></ellipse>
+          <ellipse rx="5.5" ry="12" fill="url(#plg8)" transform="rotate(72) translate(0,-7)"></ellipse>
+          <ellipse rx="5.5" ry="12" fill="url(#plg8)" transform="rotate(144) translate(0,-7)"></ellipse>
+          <ellipse rx="5.5" ry="12" fill="url(#plg8)" transform="rotate(216) translate(0,-7)"></ellipse>
+          <ellipse rx="5.5" ry="12" fill="url(#plg8)" transform="rotate(288) translate(0,-7)"></ellipse>
+          <circle r="5.5" fill="#f5c842"></circle>
+          <circle r="3" fill="#e09800" opacity="0.7"></circle>
+        </g>
+      </svg>
+      <span class="bucket-label">Go to Alissia's spot to watch the sunset</span>
+    </div><div class="bucket-item">
+      <svg class="plumeria-svg" xmlns="http://www.w3.org/2000/svg" viewBox="-18 -18 36 36" width="36" height="36">
+        <defs>
+          <radialgradient id="plg9" cx="0" cy="0" r="15" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#f5d555"></stop>
+            <stop offset="22%" stop-color="#ffc8dc"></stop>
+            <stop offset="65%" stop-color="#e0406a"></stop>
+            <stop offset="100%" stop-color="#a01830"></stop>
+          </radialgradient>
+        </defs>
+        <!-- Bud: 3 folded petals huddled upright -->
+        <g class="bud" style="opacity:1;transition:opacity 0.3s">
+          <ellipse rx="2.8" ry="9" fill="#ffc8d8" transform="rotate(-20) translate(0,-3)"></ellipse>
+          <ellipse rx="3.2" ry="10" fill="#ffaec8" transform="rotate(0) translate(0,-4)"></ellipse>
+          <ellipse rx="2.8" ry="9" fill="#ffc8d8" transform="rotate(20) translate(0,-3)"></ellipse>
+          <circle r="4" fill="#f5c842"></circle>
+          <circle r="2.2" fill="#e09800" opacity="0.7"></circle>
+        </g>
+        <!-- Bloom: full 5-petal plumeria -->
+        <g class="bloom" style="opacity:0;transition:opacity 0.5s 0.1s">
+          <ellipse rx="5.5" ry="12" fill="url(#plg9)" transform="rotate(0) translate(0,-7)"></ellipse>
+          <ellipse rx="5.5" ry="12" fill="url(#plg9)" transform="rotate(72) translate(0,-7)"></ellipse>
+          <ellipse rx="5.5" ry="12" fill="url(#plg9)" transform="rotate(144) translate(0,-7)"></ellipse>
+          <ellipse rx="5.5" ry="12" fill="url(#plg9)" transform="rotate(216) translate(0,-7)"></ellipse>
+          <ellipse rx="5.5" ry="12" fill="url(#plg9)" transform="rotate(288) translate(0,-7)"></ellipse>
+          <circle r="5.5" fill="#f5c842"></circle>
+          <circle r="3" fill="#e09800" opacity="0.7"></circle>
+        </g>
+      </svg>
+      <span class="bucket-label">Go to Lorenzo's spot to watch sunrise ;)</span>
+    </div><div class="bucket-item">
+      <svg class="plumeria-svg" xmlns="http://www.w3.org/2000/svg" viewBox="-18 -18 36 36" width="36" height="36">
+        <defs>
+          <radialgradient id="plg10" cx="0" cy="0" r="15" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#f5d555"></stop>
+            <stop offset="22%" stop-color="#ffc8dc"></stop>
+            <stop offset="65%" stop-color="#e0406a"></stop>
+            <stop offset="100%" stop-color="#a01830"></stop>
+          </radialgradient>
+        </defs>
+        <!-- Bud: 3 folded petals huddled upright -->
+        <g class="bud" style="opacity:1;transition:opacity 0.3s">
+          <ellipse rx="2.8" ry="9" fill="#ffc8d8" transform="rotate(-20) translate(0,-3)"></ellipse>
+          <ellipse rx="3.2" ry="10" fill="#ffaec8" transform="rotate(0) translate(0,-4)"></ellipse>
+          <ellipse rx="2.8" ry="9" fill="#ffc8d8" transform="rotate(20) translate(0,-3)"></ellipse>
+          <circle r="4" fill="#f5c842"></circle>
+          <circle r="2.2" fill="#e09800" opacity="0.7"></circle>
+        </g>
+        <!-- Bloom: full 5-petal plumeria -->
+        <g class="bloom" style="opacity:0;transition:opacity 0.5s 0.1s">
+          <ellipse rx="5.5" ry="12" fill="url(#plg10)" transform="rotate(0) translate(0,-7)"></ellipse>
+          <ellipse rx="5.5" ry="12" fill="url(#plg10)" transform="rotate(72) translate(0,-7)"></ellipse>
+          <ellipse rx="5.5" ry="12" fill="url(#plg10)" transform="rotate(144) translate(0,-7)"></ellipse>
+          <ellipse rx="5.5" ry="12" fill="url(#plg10)" transform="rotate(216) translate(0,-7)"></ellipse>
+          <ellipse rx="5.5" ry="12" fill="url(#plg10)" transform="rotate(288) translate(0,-7)"></ellipse>
+          <circle r="5.5" fill="#f5c842"></circle>
+          <circle r="3" fill="#e09800" opacity="0.7"></circle>
+        </g>
+      </svg>
+      <span class="bucket-label">Lots of cuddling and kisses</span>
+    </div></div>
+  </div>
+
+  <!-- World Map link -->
+  <a href="http://localhost:3000/map.html" class="map-btn">
+    🌍 Our World Map
+  </a>
+
+  <p class="footer">Counting down every second...</p>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+  <div class="modal-box">
+    <span class="modal-emoji" id="modal-emoji"></span>
+    <p class="modal-title" id="modal-title"></p>
+    <p class="modal-body" id="modal-body"></p>
+    <button class="modal-close" onclick="closeModal()">Close</button>
+  </div>
+</div>
+
+<script>
+  /* ══════════════════════════════════════
+     CONFIGURATION — Edit these values ✏️
+  ══════════════════════════════════════ */
+
+  const TARGET = new Date('2026-06-22T20:00:00');
+
+  // When the countdown started (the day you two were last together, or when you set this up)
+  const JOURNEY_START = new Date('2026-04-12T12:18:00');
+
+  // Couple stats — set to whatever you like
+  const STATS = [
+    { num: '365+', desc: 'days together' },
+    { num: '∞',    desc: 'messages sent' },
+    { num: '100+', desc: 'photos together' },
+    { num: '63',   desc: 'days apart' },
+  ];
+
+  // Bucket list items
+  const BUCKET = [
+    'Surfing',
+    'Windsurfing',
+    'Scuba Diving',
+    'Swim with a whale',
+    'Skydiving',
+    'Free dive at 20M',
+    'Cliff jumps',
+    'Discover new islands together',
+    "Go to Alissia's spot to watch the sunset",
+    "Go to Lorenzo's spot to watch sunrise ;)",
+    'Lots of cuddling and kisses',
+  ];
+
+  // Sweet rotating messages
+  const SWEET_MSGS = [
+    'Only {d} sunsets left.',
+    "You're worth every second of waiting.",
+    'Almost there, love. 💛',
+    "{d} days and I'm already excited.",
+    'Counting down with you in my heart.',
+    'The best reunion is just {d} days away.',
+    'Every hour closer is a gift.',
+  ];
+
+  // Surprise Me pool
+  const SURPRISES = [
+    '✨ You make every day brighter even from far away.',
+    '💛 Distance is just a number. What we have is real.',
+    '🌙 I fall asleep thinking about June 22.',
+    '☀️ Imagine waking up and not having to say goodbye.',
+    '📸 I want a thousand more photos with you.',
+    '🍵 Our next café date is going to feel like a dream.',
+    '💌 Every "good morning" you send is my favorite.',
+    '🌍 You are my favorite person on this entire planet.',
+    '🎶 I have a song saved that reminds me of you every time.',
+    '🌸 The wait makes seeing you again even more magical.',
+    '✈️ Next time I land, I won\'t want to leave.',
+    '🕯️ Some people search forever for what we already have.',
+    '🌟 You\'re the kind of person who makes life feel cinematic.',
+    "🍓 I'm planning at least 12 things we're doing together.",
+    '💫 Loving you from a distance is still the best thing I do.',
+    '🏡 Wherever you are feels like home to me.',
+  ];
+
+  // "Open When" messages — unlocks when daysLeft <= threshold
+  const OPEN_WHEN = [
+    {
+      threshold: 999,
+      icon: '😔',
+      label: 'Open when you miss me',
+      body: `Close your eyes. Remember the last time we laughed until it hurt? I'm right there. You carry me everywhere you go, and I carry you. Missing each other just means what we have is real. I'll see you so soon, love. 💛`,
+    },
+    {
+      threshold: 50,
+      icon: '🌟',
+      label: 'Open when you need motivation',
+      body: `50 days or less. Do you realize how close that is? You've already made it through the hardest part. Keep going — for the café dates, the lazy mornings, the walks and the photos. You've got this. I believe in you completely.`,
+    },
+    {
+      threshold: 30,
+      icon: '🎉',
+      label: "Open when it's one month away",
+      body: `One month. ONE MONTH. Start thinking about what outfit you want to wear when I see you. Start thinking about the first thing you want to say. I've been thinking about it for weeks. We are so close I can almost feel it. 💛`,
+    },
+    {
+      threshold: 10,
+      icon: '🔥',
+      label: "Open when it's almost time",
+      body: `10 days or less. I have butterflies just imagining it. Pack your bags, charge your camera, and clear your schedule — because I am not letting you out of my sight for a very long time. See you in just a few days, love. 🌙`,
+    },
+    {
+      threshold: 1,
+      icon: '💛',
+      label: "Open when it's tomorrow",
+      body: `TOMORROW. After all those days — tomorrow I get to see you. I don't think I'm going to sleep tonight. Thank you for waiting. Thank you for being you. Tomorrow everything feels like a beginning. I love you. 💛`,
+    },
+  ];
+
+  /* ══════════════════════════════════════
+     Stars & Hearts
+  ══════════════════════════════════════ */
+  const starsEl = document.getElementById('stars');
+  for (let i = 0; i < 120; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = Math.random() * 2.5 + 0.5;
+    s.style.cssText = `
+      width:${size}px; height:${size}px;
+      top:${Math.random()*100}%;
+      left:${Math.random()*100}%;
+      --d:${(Math.random()*4+1.5).toFixed(1)}s;
+    `;
+    starsEl.appendChild(s);
+  }
+
+  const hearts = ['💛','🌙','✨','💫','🌸'];
+  for (let i = 0; i < 8; i++) {
+    const h = document.createElement('div');
+    h.className = 'heart-float';
+    h.textContent = hearts[i % hearts.length];
+    h.style.cssText = `
+      left:${Math.random()*95}%;
+      --dur:${(Math.random()*8+7).toFixed(1)}s;
+      --delay:${(Math.random()*10).toFixed(1)}s;
+      font-size:${(Math.random()*0.8+0.8).toFixed(1)}rem;
+    `;
+    document.body.appendChild(h);
+  }
+
+  /* ══════════════════════════════════════
+     Map
+  ══════════════════════════════════════ */
+  const REUNION = [-21.1151, 55.5364];
+  const PARIS   = [48.8566, 2.3522];
+
+  function greatCirclePoints(p1, p2, n) {
+    const R = Math.PI / 180;
+    const [φ1, λ1] = [p1[0]*R, p1[1]*R];
+    const [φ2, λ2] = [p2[0]*R, p2[1]*R];
+    const d = 2*Math.asin(Math.sqrt(Math.sin((φ2-φ1)/2)**2+Math.cos(φ1)*Math.cos(φ2)*Math.sin((λ2-λ1)/2)**2));
+    return Array.from({length: n+1}, (_, i) => {
+      const f = i/n;
+      const A = Math.sin((1-f)*d)/Math.sin(d), B = Math.sin(f*d)/Math.sin(d);
+      const x = A*Math.cos(φ1)*Math.cos(λ1)+B*Math.cos(φ2)*Math.cos(λ2);
+      const y = A*Math.cos(φ1)*Math.sin(λ1)+B*Math.cos(φ2)*Math.sin(λ2);
+      const z = A*Math.sin(φ1)+B*Math.sin(φ2);
+      return [Math.atan2(z,Math.sqrt(x*x+y*y))/R, Math.atan2(y,x)/R];
+    });
+  }
+
+  function getBearing(a, b) {
+    const R = Math.PI/180, dL = (b[1]-a[1])*R;
+    const φ1 = a[0]*R, φ2 = b[0]*R;
+    return (Math.atan2(Math.sin(dL)*Math.cos(φ2), Math.cos(φ1)*Math.sin(φ2)-Math.sin(φ1)*Math.cos(φ2)*Math.cos(dL))/R+360)%360;
+  }
+
+  const flowerIcon = L.divIcon({
+    html: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="-20 -20 40 40" width="22" height="22">
+      <defs>
+        <radialGradient id="fg" cx="0" cy="0" r="14" gradientUnits="userSpaceOnUse">
+          <stop offset="0%"   stop-color="#f7e55a"/>
+          <stop offset="38%"  stop-color="#fdfdf0"/>
+          <stop offset="100%" stop-color="white"/>
+        </radialGradient>
+      </defs>
+      <ellipse rx="5" ry="10.5" fill="url(#fg)" transform="rotate(0) translate(0,-7)"/>
+      <ellipse rx="5" ry="10.5" fill="url(#fg)" transform="rotate(72) translate(0,-7)"/>
+      <ellipse rx="5" ry="10.5" fill="url(#fg)" transform="rotate(144) translate(0,-7)"/>
+      <ellipse rx="5" ry="10.5" fill="url(#fg)" transform="rotate(216) translate(0,-7)"/>
+      <ellipse rx="5" ry="10.5" fill="url(#fg)" transform="rotate(288) translate(0,-7)"/>
+      <circle r="5.5" fill="#f5c842"/>
+      <circle r="3"   fill="#e09800" opacity="0.65"/>
+    </svg>`,
+    iconSize: [22, 22], iconAnchor: [11, 11], className: ''
+  });
+
+  const arcPoints = greatCirclePoints(REUNION, PARIS, 120);
+
+  const journeyMap = L.map('journey-map', {
+    zoomControl: false, dragging: false,
+    scrollWheelZoom: false, doubleClickZoom: false,
+    touchZoom: false, attributionControl: false
+  });
+
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(journeyMap);
+
+  L.polyline(arcPoints, { color: 'rgba(245,200,66,0.5)', weight: 2, dashArray: '6 9' }).addTo(journeyMap);
+
+  L.circleMarker(REUNION, { radius: 5, color: '#ff8fab', fillColor: '#ff8fab', fillOpacity: 1, weight: 0 })
+    .bindTooltip('La Réunion', { permanent: false, direction: 'right' })
+    .addTo(journeyMap);
+
+  L.marker(PARIS, { icon: L.divIcon({
+    html: '<div style="font-size:1.1rem;line-height:1;filter:drop-shadow(0 0 4px rgba(245,200,66,0.8))">💛</div>',
+    iconSize: [20,20], iconAnchor: [10,18], className: ''
+  }) }).bindTooltip('Paris', { permanent: false, direction: 'top' }).addTo(journeyMap);
+
+  const initIdx = Math.min(Math.round(Math.min(Math.max((new Date()-JOURNEY_START)/(TARGET-JOURNEY_START),0),1)*(arcPoints.length-1)), arcPoints.length-2);
+  const planeMark = L.marker(arcPoints[initIdx], { icon: flowerIcon }).addTo(journeyMap);
+
+  journeyMap.fitBounds([[-38, -18], [58, 68]], { padding: [8, 8] });
+
+  /* ══════════════════════════════════════
+     Countdown
+  ══════════════════════════════════════ */
+  let sweetIdx = 0;
+
+  function pad(n) { return String(n).padStart(2,'0'); }
+
+  function tick() {
+    const now  = new Date();
+    const diff = TARGET - now;
+
+    if (diff <= 0) {
+      document.getElementById('cd-days').textContent = '0';
+      document.getElementById('cd-hrs').textContent  = '00';
+      document.getElementById('cd-min').textContent  = '00';
+      document.getElementById('cd-sec').textContent  = '00';
+      document.getElementById('progress-pct').textContent = '100% — Together at last!';
+      if (window.planeMark) planeMark.setLatLng(PARIS);
+      return;
+    }
+
+    const days = Math.floor(diff / 86400000);
+    const hrs  = Math.floor((diff % 86400000) / 3600000);
+    const min  = Math.floor((diff % 3600000)  / 60000);
+    const sec  = Math.floor((diff % 60000)    / 1000);
+
+    const h = document.querySelector('.pulse-heart');
+    h.classList.remove('beat'); void h.offsetWidth; h.classList.add('beat');
+    document.getElementById('cd-days').textContent = days;
+    document.getElementById('cd-hrs').textContent  = pad(hrs);
+    document.getElementById('cd-min').textContent  = pad(min);
+    document.getElementById('cd-sec').textContent  = pad(sec);
+
+    // Journey map plane
+    const total = TARGET - JOURNEY_START;
+    const elapsed = now - JOURNEY_START;
+    const pct = Math.min(Math.max(elapsed / total, 0), 1);
+    const pctDisplay = Math.round(pct * 100);
+    document.getElementById('progress-pct').textContent = `${pctDisplay}%`;
+    document.getElementById('journey-bar-fill').style.width = `${pctDisplay}%`;
+    if (window.planeMark && arcPoints.length > 1) {
+      const idx = Math.min(Math.round(pct * (arcPoints.length - 1)), arcPoints.length - 2);
+      planeMark.setLatLng(arcPoints[idx]);
+      planeMark.setIcon(flowerIcon);
+    }
+
+  }
+
+  setInterval(() => {
+    tick();
+    if (new Date().getSeconds() % 10 === 0) sweetIdx++;
+  }, 1000);
+  tick();
+
+  /* ══════════════════════════════════════
+     Bucket List (persisted with localStorage)
+  ══════════════════════════════════════ */
+  const savedBucket = JSON.parse(localStorage.getItem('bucket') || '{}');
+  const bucketEl = document.getElementById('bucket-list');
+
+  BUCKET.forEach((item, i) => {
+    const done = !!savedBucket[i];
+    const div = document.createElement('div');
+    div.className = 'bucket-item' + (done ? ' done' : '');
+    div.innerHTML = `
+      <svg class="plumeria-svg${done ? ' bloomed' : ''}" xmlns="http://www.w3.org/2000/svg"
+           viewBox="-18 -18 36 36" width="36" height="36">
+        <defs>
+          <radialGradient id="plg${i}" cx="0" cy="0" r="15" gradientUnits="userSpaceOnUse">
+            <stop offset="0%"   stop-color="#f5d555"/>
+            <stop offset="22%"  stop-color="#ffc8dc"/>
+            <stop offset="65%"  stop-color="#e0406a"/>
+            <stop offset="100%" stop-color="#a01830"/>
+          </radialGradient>
+        </defs>
+        <!-- Bud: 3 folded petals huddled upright -->
+        <g class="bud" style="opacity:${done?0:1};transition:opacity 0.3s">
+          <ellipse rx="2.8" ry="9" fill="#ffc8d8" transform="rotate(-20) translate(0,-3)"/>
+          <ellipse rx="3.2" ry="10" fill="#ffaec8" transform="rotate(0) translate(0,-4)"/>
+          <ellipse rx="2.8" ry="9" fill="#ffc8d8" transform="rotate(20) translate(0,-3)"/>
+          <circle r="4" fill="#f5c842"/>
+          <circle r="2.2" fill="#e09800" opacity="0.7"/>
+        </g>
+        <!-- Bloom: full 5-petal plumeria -->
+        <g class="bloom" style="opacity:${done?1:0};transition:opacity 0.5s 0.1s">
+          <ellipse rx="5.5" ry="12" fill="url(#plg${i})" transform="rotate(0) translate(0,-7)"/>
+          <ellipse rx="5.5" ry="12" fill="url(#plg${i})" transform="rotate(72) translate(0,-7)"/>
+          <ellipse rx="5.5" ry="12" fill="url(#plg${i})" transform="rotate(144) translate(0,-7)"/>
+          <ellipse rx="5.5" ry="12" fill="url(#plg${i})" transform="rotate(216) translate(0,-7)"/>
+          <ellipse rx="5.5" ry="12" fill="url(#plg${i})" transform="rotate(288) translate(0,-7)"/>
+          <circle r="5.5" fill="#f5c842"/>
+          <circle r="3"   fill="#e09800" opacity="0.7"/>
+        </g>
+      </svg>
+      <span class="bucket-label">${item}</span>
+    `;
+    div.onclick = () => {
+      savedBucket[i] = !savedBucket[i];
+      localStorage.setItem('bucket', JSON.stringify(savedBucket));
+      const bloomed = !!savedBucket[i];
+      div.classList.toggle('done', bloomed);
+      div.querySelector('.bud').style.opacity   = bloomed ? '0' : '1';
+      div.querySelector('.bloom').style.opacity = bloomed ? '1' : '0';
+    };
+    bucketEl.appendChild(div);
+  });
+
+  /* ══════════════════════════════════════
+     MUSIC — "Special" by SZA
+     Source: SZA – SOS Full Album (YouTube)
+     "Special" starts at 10:41 (641s)
+  ══════════════════════════════════════ */
+  var ytPlayer     = null;
+  var musicMuted   = true;
+  var playerReady  = false;
+
+  // Load YouTube IFrame API dynamically
+  (function() {
+    var tag = document.createElement('script');
+    tag.src = 'https://www.youtube.com/iframe_api';
+    document.head.appendChild(tag);
+  })();
+
+  window.onYouTubeIframeAPIReady = function() {
+    ytPlayer = new YT.Player('yt-container', {
+      height: '1', width: '1',
+      videoId: 'wg02Z6Tr1RY',   // SZA – SOS Full Album
+      playerVars: {
+        autoplay:        1,
+        mute:            1,
+        start:           641,   // 10:41 — start of "Special"
+        controls:        0,
+        disablekb:       1,
+        rel:             0,
+        modestbranding:  1,
+        playsinline:     1,
+      },
+      events: {
+        onReady: function(e) {
+          playerReady = true;
+          e.target.mute();
+          e.target.playVideo();
+          // Loop: when time passes ~13:20 (800s), seek back to 10:41
+          setInterval(function() {
+            if (ytPlayer && playerReady) {
+              try {
+                if (ytPlayer.getCurrentTime() >= 798) ytPlayer.seekTo(641, true);
+              } catch(err) {}
+            }
+          }, 1000);
+        },
+        onStateChange: function(e) {
+          // If the video ends naturally, loop back
+          if (e.data === 0) { ytPlayer.seekTo(641, true); ytPlayer.playVideo(); }
+        }
+      }
+    });
+  };
+
+  function toggleMute() {
+    if (!playerReady) return;
+    musicMuted = !musicMuted;
+    const btn  = document.getElementById('music-btn');
+    const icon = document.getElementById('music-icon');
+    if (musicMuted) {
+      ytPlayer.mute();
+      icon.textContent = '🔇';
+      btn.classList.remove('playing');
+    } else {
+      ytPlayer.unMute();
+      ytPlayer.setVolume(55);
+      icon.textContent = '🔊';
+      btn.classList.add('playing');
+    }
+  }
+
+</script><div class="heart-float" style="left: 57.7049%; --dur: 9.3s; --delay: 7.3s; font-size: 1rem;">💛</div><div class="heart-float" style="left: 42.6394%; --dur: 8.3s; --delay: 1.3s; font-size: 1.1rem;">🌙</div><div class="heart-float" style="left: 33.9955%; --dur: 8.3s; --delay: 4.1s; font-size: 1.5rem;">✨</div><div class="heart-float" style="left: 55.2177%; --dur: 9.3s; --delay: 8.1s; font-size: 1rem;">💫</div><div class="heart-float" style="left: 29.7729%; --dur: 7.3s; --delay: 4.4s; font-size: 1.5rem;">🌸</div><div class="heart-float" style="left: 74.8625%; --dur: 12.4s; --delay: 6.6s; font-size: 1.4rem;">💛</div><div class="heart-float" style="left: 44.9798%; --dur: 12.2s; --delay: 9.8s; font-size: 1.4rem;">🌙</div><div class="heart-float" style="left: 82.6127%; --dur: 9.4s; --delay: 1.5s; font-size: 1.2rem;">✨</div>
+
+
+</body><grammarly-desktop-integration data-grammarly-shadow-root="true"><template shadowrootmode="open"><style>
+      div.grammarly-desktop-integration {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select:none;
+        user-select:none;
+      }
+
+      div.grammarly-desktop-integration:before {
+        content: attr(data-content);
+      }
+    </style><div aria-label="grammarly-integration" role="group" tabindex="-1" class="grammarly-desktop-integration" data-content="{&quot;mode&quot;:&quot;full&quot;,&quot;isActive&quot;:true,&quot;isUserDisabled&quot;:false}"></div></template></grammarly-desktop-integration></html>
